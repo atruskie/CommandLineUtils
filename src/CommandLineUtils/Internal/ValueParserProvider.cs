@@ -9,7 +9,10 @@ using McMaster.Extensions.CommandLineUtils.ValueParsers;
 
 namespace McMaster.Extensions.CommandLineUtils
 {
-    internal class ValueParserProvider
+    /// <summary>
+    /// A store of parsers that are used to convert argument values from strings to types.
+    /// </summary>
+    public class ValueParserProvider
     {
         private Dictionary<Type, IValueParser> _parsers = new Dictionary<Type, IValueParser>
         {
@@ -29,9 +32,12 @@ namespace McMaster.Extensions.CommandLineUtils
         private ValueParserProvider()
         { }
 
+        /// <summary>
+        /// A singleton of the parser provider.
+        /// </summary>
         public static ValueParserProvider Default { get; } = new ValueParserProvider();
 
-        public IValueParser GetParser(Type type)
+        internal IValueParser GetParser(Type type)
         {
             if (_parsers.TryGetValue(type, out var parser))
             {
@@ -55,6 +61,26 @@ namespace McMaster.Extensions.CommandLineUtils
             }
 
             return parser;
+        }
+
+        /// <summary>
+        /// Add a new parser to the provider.
+        /// </summary>
+        /// <param name="type">The type for which this parser will be used.</param>
+        /// <param name="parser">An instance of the parser that is used to convert an argument from a string.</param>
+        public void AddParser(Type type, IValueParser parser)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            if (parser == null)
+            {
+                throw new ArgumentNullException(nameof(parser));
+            }
+
+            _parsers.Add(type, parser);
         }
     }
 }
