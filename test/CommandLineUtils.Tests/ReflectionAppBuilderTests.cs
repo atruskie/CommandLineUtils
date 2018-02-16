@@ -154,6 +154,29 @@ namespace McMaster.Extensions.CommandLineUtils.Tests
                 ex.Message);
         }
 
+        private class EmptyShortOptionName
+        {
+            [Option(ShortName = "")]
+            public int Message { get; }
+
+            [Option(ShortName = "")]
+            public int Mode { get; }
+        }
+
+        [Fact]
+        public void IntepretsEmptyShortNameAsNoShortName()
+        {
+            var builder = new ReflectionAppBuilder<EmptyShortOptionName>();
+            builder.Initialize();
+
+            var d1 = Assert.Single(builder.App.Options, o => o.LongName == "message");
+            Assert.Null(d1.ShortName);
+            Assert.Equal("--message <MESSAGE>", d1.Template);
+            var d2 = Assert.Single(builder.App.Options, o => o.LongName == "mode");
+            Assert.Null(d2.ShortName);
+            Assert.Equal("--mode <MODE>", d2.Template);
+        }
+
         private class AmbiguousLongOptionName
         {
             [Option("--no-edit")]
