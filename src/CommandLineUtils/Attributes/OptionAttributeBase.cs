@@ -57,7 +57,10 @@ namespace McMaster.Extensions.CommandLineUtils
             option.Description = Description ?? option.Description;
             option.Inherited = Inherited;
             option.ShowInHelpText = ShowInHelpText;
-            option.ShortName = ShortName ?? option.ShortName;
+
+            // use empty string to indicate intentional lack of short name
+            option.ShortName = this.ShortName == string.Empty ? null : (this.ShortName ?? option.ShortName);
+
             option.LongName = LongName ?? option.LongName;
             option.ValueName = ValueName ?? option.ValueName;
             option.SymbolName = SymbolName ?? option.SymbolName;
